@@ -48,7 +48,7 @@ func (s *server) Div(ctx context.Context, in *pb.CalcReq) (*pb.DivRes, error) {
 	if in.N2 == 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "Cannot divide by zero")
 	}
-	result := float32(in.N1) / float32(in.N2) // convert to float to accomodate decimal results
+	result := in.N1 / in.N2
 	return &pb.DivRes{R: result}, nil
 }
 
