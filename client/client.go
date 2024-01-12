@@ -18,16 +18,16 @@ var (
 )
 
 // Parse input arguments as integers of n1 and n2
-func argParser(n1 string, n2 string) (int32, int32) {
-	N1, err := strconv.Atoi(os.Args[1])
+func argParser(n1 string, n2 string) (float32, float32) {
+	N1, err := strconv.ParseFloat(os.Args[1], 32)
 	if err != nil {
-		log.Fatalf("Cannot parse arg[1]: arguments should be int32")
+		log.Fatalf("Cannot parse arg[1]: arguments should be in float32 and in range")
 	}
-	N2, err := strconv.Atoi(os.Args[2])
+	N2, err := strconv.ParseFloat(os.Args[2], 32)
 	if err != nil {
-		log.Fatalf("Cannot parse arg[2]: arguments should be int32")
+		log.Fatalf("Cannot parse arg[2]: arguments should be float32 and in range")
 	}
-	return int32(N1), int32(N2)
+	return float32(N1), float32(N2)
 }
 
 func main() {
@@ -54,30 +54,30 @@ func main() {
 	defer cancel()
 
 	// Perform addition of n1 and n2 in the server and return the result
-	AddRes, err := c.Add(ctx, &pb.CalcReq{N1:int32(n1), N2:int32(n2)})
+	AddRes, err := c.Add(ctx, &pb.CalcReq{N1:float32(n1), N2:float32(n2)})
 	if err != nil {
 		log.Fatalf("Addition error: %s", err)
 	}
-	log.Printf("%d + %d = %d", n1, n2, AddRes.R)
+	log.Printf("%.2f + %.2f = %.2f", n1, n2, AddRes.R) // result of division diplayed as float with 2 decimal places
 
 	// Perform substraction of n1 and n2 in the server and return the result
-	SubRes, err := c.Sub(ctx, &pb.CalcReq{N1:int32(n1), N2:int32(n2)})
+	SubRes, err := c.Sub(ctx, &pb.CalcReq{N1:float32(n1), N2:float32(n2)})
 	if err != nil {
 		log.Fatalf("Substraction error: %s", err)
 	}
-	log.Printf("%d - %d = %d", n1, n2, SubRes.R)
+	log.Printf("%.2f - %.2f = %.2f", n1, n2, SubRes.R)
 
 	// Perform multiplication of n1 and n2 in the server and return the result
-	MulRes, err := c.Mul(ctx, &pb.CalcReq{N1:int32(n1), N2:int32(n2)})
+	MulRes, err := c.Mul(ctx, &pb.CalcReq{N1:float32(n1), N2:float32(n2)})
 	if err != nil {
 		log.Fatalf("Multiplication error: %s", err)
 	}
-	log.Printf("%d * %d = %d", n1, n2, MulRes.R)
+	log.Printf("%.2f * %.2f = %.2f", n1, n2, MulRes.R)
 
 	// Perform division of n1 and n2 in the server and return the result
-	DivRes, err := c.Div(ctx, &pb.CalcReq{N1:int32(n1), N2:int32(n2)})
+	DivRes, err := c.Div(ctx, &pb.CalcReq{N1:float32(n1), N2:float32(n2)})
 	if err != nil {
 		log.Fatalf("Division error: %s", err)
 	}
-	log.Printf("%d / %d = %.2f", n1, n2, DivRes.R) // result of division diplayed as float with 2 decimal places
+	log.Printf("%.2f / %.2f = %.2f", n1, n2, DivRes.R) 
 }

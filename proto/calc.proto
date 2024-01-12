@@ -10,17 +10,17 @@ service Calculator {
 
 // for request variables
 message CalcReq {
-    int32 n1 = 1;
-    int32 n2 = 2;
+    float n1 = 1;
+    float n2 = 2;
 }
 
 // for result/response variables
 message AddRes {
-    int32 r = 1;
+    float r = 1;
 }
 
 message SubRes {
-    int32 r = 1;
+    float r = 1;
 }
 
 message DivRes {
@@ -28,5 +28,5 @@ message DivRes {
 }
 
 message MulRes {
-    int32 r = 1;
+    float r = 1;
 }

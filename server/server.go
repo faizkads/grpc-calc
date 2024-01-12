@@ -23,28 +23,28 @@ type server struct {
 
 // Function for addition log and operation
 func (s *server) Add(ctx context.Context, in *pb.CalcReq) (*pb.AddRes, error) {
-	log.Printf("Received: %d + %d", in.N1, in.N2)
+	log.Printf("Received: %.2f + %.2f", in.N1, in.N2)
 	result := in.N1 + in.N2
 	return &pb.AddRes{R: result}, nil
 }
 
 // Function for substraction log and operation
 func (s *server) Sub(ctx context.Context, in *pb.CalcReq) (*pb.SubRes, error) {
-	log.Printf("Received: %d - %d", in.N1, in.N2)
+	log.Printf("Received: %.2f - %.2f", in.N1, in.N2)
 	result := in.N1 - in.N2
 	return &pb.SubRes{R: result}, nil
 }
 
 // Function for multiplication log and operation
 func (s *server) Mul(ctx context.Context, in *pb.CalcReq) (*pb.MulRes, error) {
-	log.Printf("Received: %d * %d", in.N1, in.N2)
+	log.Printf("Received: %.2f * %.2f", in.N1, in.N2)
 	result := in.N1 * in.N2
 	return &pb.MulRes{R: result}, nil
 }
 
 // Function for division log and operation
 func (s *server) Div(ctx context.Context, in *pb.CalcReq) (*pb.DivRes, error) {
-	log.Printf("Received: %d / %d", in.N1, in.N2)
+	log.Printf("Received: %.2f / %.2f", in.N1, in.N2)
 	if in.N2 == 0 {
 		return nil, status.Errorf(codes.InvalidArgument, "Cannot divide by zero")
 	}
