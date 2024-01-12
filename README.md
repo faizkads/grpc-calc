@@ -1,7 +1,9 @@
 # gRPC for Calculator
 A simple calculator gRPC to count operations of: addition, subtraction, multiplication, and division
 
-The client is only limited to present 2 arguments in the type of and in the range of int32 data
+The client is only limited to present 2 arguments in the type of and in the range of float32 data
+
+The variables will only be displayed in 2 decimal places
 
 ## Protobuf Protoc Initiation
 
@@ -35,20 +37,17 @@ protoc --go_out=. --go-grpc_out=. calc/proto/calc.proto
 go run server/server.go
 ```
 
-3. Run the client with 2 integer arguments, for example:
+4. Run the client with 2 arguments in float32, for example:
 ```bash
-go run client/client.go 10 2
+go run client/client.go 10 2.5
 ```
 
 ## Test Cases
 - Check results
 ```bash
-go run client/client.go 10 5
-```
-
-- Check results for decimal division result
-```bash
-go run client/client.go 10 3
+go run client/client.go 17 5
+go run client/client.go 17 5.7
+go run client/client.go 1.7 5.7
 ```
 
 - Check error by invalid number of arguments
@@ -59,7 +58,6 @@ go run client/client.go 7 8 2
 
 - Check error by invalid argument data type
 ```bash
-go run client/client.go 1012389741873293471028371208641702312 1
 go run client/client.go 10.2 lala
 ```
 
