@@ -1,0 +1,14 @@
+syntax = "proto3";
+option go_package = "go_server/pb";
+
+service Notif {
+    rpc StreamMeow (MeowReq) returns (stream MeowRes);
+}
+
+message MeowReq {
+    int32 count = 1;
+}
+
+message MeowRes {
+    string fact = 1;
+}
