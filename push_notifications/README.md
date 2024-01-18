@@ -74,22 +74,21 @@ Topics:
 2. Currency Exchange Rate
 Pick a topic for your push notif [1/2]: 1
 Enter the number of iteration: 4
-
-[2024-01-18 15:18:09] Meow Fact 1: Of all the species of cats, the domestic cat is the only species able to hold its tail vertically while walking. All species of wild cats hold their talk horizontally or tucked between their legs while walking.
-[2024-01-18 15:18:09] Meow Fact 2: The first cat show was in 1871 at the Crystal Palace in London.
-[2024-01-18 15:18:09] Meow Fact 3: Some common houseplants poisonous to cats include: English Ivy, iris, mistletoe, philodendron, and yew.  
-[2024-01-18 15:18:09] Meow Fact 4: Cats can be taught to walk on a leash, but a lot of time and patience is required to teach them. The younger the cat is, the easier it will be for them to learn.
+[2024-01-18 15:46:01] Meow Fact 1: Cats bury their feces to cover their trails from predators.
+[2024-01-18 15:46:06] Meow Fact 2: A cat has been mayor of Talkeetna, Alaska, for 15 years. His name is Stubbs.
+[2024-01-18 15:46:11] Meow Fact 3: The worlds richest cat is worth $13 million after his human passed away and left her fortune to him.     
+[2024-01-18 15:46:16] Meow Fact 4: Almost 10% of a cat's bones are in its tail, and the tail is used to maintain balance.
 ```
 
 - Server
 ```
 go run server.go
 2024/01/18 15:10:32 Starting notification server on port 50051
-2024/01/18 15:18:09 Received request for Meow Facts with [4] iteration
-2024/01/18 15:18:14 Meow Fact 1 Sent
-2024/01/18 15:18:19 Meow Fact 2 Sent
-2024/01/18 15:18:24 Meow Fact 3 Sent
-2024/01/18 15:18:29 Meow Fact 4 Sent
+2024/01/18 15:45:59 Received request for Meow Facts with [4] iteration
+2024/01/18 15:46:01 Meow Fact 1 Sent
+2024/01/18 15:46:06 Meow Fact 2 Sent
+2024/01/18 15:46:11 Meow Fact 3 Sent
+2024/01/18 15:46:16 Meow Fact 4 Sent
 ```
 
 ### Topic 2: Currency Exchange
