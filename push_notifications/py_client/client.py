@@ -9,8 +9,8 @@ def get_facts(stub,count):
     req = notif_pb2.MeowReq(count=count)
     res = stub.StreamMeow(req)
     count = 1
-    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S") # timestamp
     for r in res:
+        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S") # timestamp
         print(f"[{dt}] Meow Fact {count}: {r.fact}")
         count += 1
 
