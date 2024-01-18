@@ -23,8 +23,9 @@ def currency_rate(stub, from_cur, to_cur, count):
     )
     responses = stub.StreamCurrency(req)
     for response in responses:
+        print(f"[{response.date}] Base: {response.base}")
         for currency, rate in response.rates.items():
-            print(f"[{response.date}] {response.base} exchange rate for {currency}: {rate}")
+            print(f"- exchange rate for {currency}: {rate}")
 
 def topic_1(stub):
     # validate variable count
