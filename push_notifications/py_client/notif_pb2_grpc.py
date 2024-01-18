@@ -19,12 +19,23 @@ class NotifStub(object):
                 request_serializer=notif__pb2.MeowReq.SerializeToString,
                 response_deserializer=notif__pb2.MeowRes.FromString,
                 )
+        self.StreamCurrency = channel.unary_stream(
+                '/Notif/StreamCurrency',
+                request_serializer=notif__pb2.CurReq.SerializeToString,
+                response_deserializer=notif__pb2.CurRes.FromString,
+                )
 
 
 class NotifServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def StreamMeow(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StreamCurrency(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -37,6 +48,11 @@ def add_NotifServicer_to_server(servicer, server):
                     servicer.StreamMeow,
                     request_deserializer=notif__pb2.MeowReq.FromString,
                     response_serializer=notif__pb2.MeowRes.SerializeToString,
+            ),
+            'StreamCurrency': grpc.unary_stream_rpc_method_handler(
+                    servicer.StreamCurrency,
+                    request_deserializer=notif__pb2.CurReq.FromString,
+                    response_serializer=notif__pb2.CurRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +78,22 @@ class Notif(object):
         return grpc.experimental.unary_stream(request, target, '/Notif/StreamMeow',
             notif__pb2.MeowReq.SerializeToString,
             notif__pb2.MeowRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StreamCurrency(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/Notif/StreamCurrency',
+            notif__pb2.CurReq.SerializeToString,
+            notif__pb2.CurRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

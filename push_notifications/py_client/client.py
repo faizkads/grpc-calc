@@ -2,22 +2,71 @@ import grpc
 
 import notif_pb2
 import notif_pb2_grpc
+from datetime import datetime
 
 def get_facts(stub,count):
     req = notif_pb2.MeowReq(count=count)
     res = stub.StreamMeow(req)
-    # print(res)
     count = 1
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for r in res:
-        print(f"\n[Meow Fact {count}]: {r.fact}")
+        print(f"[{dt}] Meow Fact {count}: {r.fact}")
         count += 1
+
+def currency_rate(stub, from_cur, to_cur, count):
+    req = notif_pb2.CurReq(
+        from_cur = from_cur,
+        to_cur = to_cur,
+        count = count
+    )
+    responses = stub.StreamCurrency(req)
+    for response in responses:
+        for currency, rate in response.rates.items():
+            print(f"[{response.date}] {response.base} exchange rate for {currency}: {rate}")
+
+def topic_1(stub):
+    try:
+        count = int(input("Enter the number of iteration: "))
+    except ValueError:
+        print("Invalid argument. Please enter a valid integer")
+        return
+
+    get_facts(stub, count)
+    
+
+def topic_2(stub):
+    codes = ["AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP",
+             "HKD", "HUF", "IDR", "ILS", "INR", "ISK", "JPY", "KRW", "MXN", "MYR",
+             "NOK", "NZD", "PHP", "PLN", "RON", "SEK", "SGD", "THB", "TRY", "USD", "ZAR"]
+
+    from_cur = input("Enter base currency code: ")
+    to_cur = input("Enter destined currency code: ")
+    if not from_cur.upper() in codes or not to_cur.upper() in codes:
+        print("Invalid currency code, available currency codes:")
+        print(codes)
+        return
+    try:
+        count = int(input("Enter the number of iteration: "))
+    except ValueError:
+        print("Invalid argument. Please enter a valid integer")
+        return
+
+    if count < 1:
+        print("Invalid argument. Iteration request should be bigger than 0")
+        return
+
+    currency_rate(stub, from_cur,to_cur,count)
+
 
 if __name__=="__main__":
     channel = grpc.insecure_channel('localhost:50051')
     stub = notif_pb2_grpc.NotifStub(channel)
 
-    try:
-        count = int(input("Enter the number of iteration: "))
-        get_facts(stub, count)
-    except ValueError:
-        print("Please insert a valid integer.")
+    topic = input("\nTopics:\n1. Daily Meow Fact\n2. Currency Exchange Rate\nPick a topic for your push notif [1/2]: ")
+
+    if topic =="1":
+        topic_1(stub)
+    elif topic == "2":
+        topic_2(stub)
+    else:
+        print("Invalid topic")

@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Notif_StreamMeow_FullMethodName = "/Notif/StreamMeow"
+	Notif_StreamMeow_FullMethodName     = "/Notif/StreamMeow"
+	Notif_StreamCurrency_FullMethodName = "/Notif/StreamCurrency"
 )
 
 // NotifClient is the client API for Notif service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotifClient interface {
 	StreamMeow(ctx context.Context, in *MeowReq, opts ...grpc.CallOption) (Notif_StreamMeowClient, error)
+	StreamCurrency(ctx context.Context, in *CurReq, opts ...grpc.CallOption) (Notif_StreamCurrencyClient, error)
 }
 
 type notifClient struct {
@@ -69,11 +71,44 @@ func (x *notifStreamMeowClient) Recv() (*MeowRes, error) {
 	return m, nil
 }
 
+func (c *notifClient) StreamCurrency(ctx context.Context, in *CurReq, opts ...grpc.CallOption) (Notif_StreamCurrencyClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Notif_ServiceDesc.Streams[1], Notif_StreamCurrency_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &notifStreamCurrencyClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Notif_StreamCurrencyClient interface {
+	Recv() (*CurRes, error)
+	grpc.ClientStream
+}
+
+type notifStreamCurrencyClient struct {
+	grpc.ClientStream
+}
+
+func (x *notifStreamCurrencyClient) Recv() (*CurRes, error) {
+	m := new(CurRes)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // NotifServer is the server API for Notif service.
 // All implementations must embed UnimplementedNotifServer
 // for forward compatibility
 type NotifServer interface {
 	StreamMeow(*MeowReq, Notif_StreamMeowServer) error
+	StreamCurrency(*CurReq, Notif_StreamCurrencyServer) error
 	mustEmbedUnimplementedNotifServer()
 }
 
@@ -83,6 +118,9 @@ type UnimplementedNotifServer struct {
 
 func (UnimplementedNotifServer) StreamMeow(*MeowReq, Notif_StreamMeowServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamMeow not implemented")
+}
+func (UnimplementedNotifServer) StreamCurrency(*CurReq, Notif_StreamCurrencyServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamCurrency not implemented")
 }
 func (UnimplementedNotifServer) mustEmbedUnimplementedNotifServer() {}
 
@@ -118,6 +156,27 @@ func (x *notifStreamMeowServer) Send(m *MeowRes) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Notif_StreamCurrency_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(CurReq)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NotifServer).StreamCurrency(m, &notifStreamCurrencyServer{stream})
+}
+
+type Notif_StreamCurrencyServer interface {
+	Send(*CurRes) error
+	grpc.ServerStream
+}
+
+type notifStreamCurrencyServer struct {
+	grpc.ServerStream
+}
+
+func (x *notifStreamCurrencyServer) Send(m *CurRes) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Notif_ServiceDesc is the grpc.ServiceDesc for Notif service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -129,6 +188,11 @@ var Notif_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "StreamMeow",
 			Handler:       _Notif_StreamMeow_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "StreamCurrency",
+			Handler:       _Notif_StreamCurrency_Handler,
 			ServerStreams: true,
 		},
 	},

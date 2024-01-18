@@ -3,6 +3,7 @@ option go_package = "go_server/pb";
 
 service Notif {
     rpc StreamMeow (MeowReq) returns (stream MeowRes);
+    rpc StreamCurrency (CurReq) returns (stream CurRes);
 }
 
 message MeowReq {
@@ -11,4 +12,16 @@ message MeowReq {
 
 message MeowRes {
     string fact = 1;
+}
+
+message CurReq {
+    string from_cur = 1;
+    string to_cur= 2;
+    int32 count = 3;
+}
+
+message CurRes {
+    string base = 1;
+    string date = 2;
+    map<string, float> rates = 3;
 }

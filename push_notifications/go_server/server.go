@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"time"
 
-	"google.golang.org/grpc"
 	pb "github.com/faizkads/push-notifications/pb"
+	"google.golang.org/grpc"
 )
 
 type notifServer struct{
@@ -39,12 +39,30 @@ func fetchMeow(count int) ([]string, error) {
 	return data["data"],nil
 }
 
-func (s *notifServer) StreamMeow(req *pb.MeowReq, stream pb.Notif_StreamMeowServer) error{
-	if req.Count < 1 {
-		return fmt.Errorf("request must include at least one time")
+func fetchCurrency(url string) (*pb.CurRes, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("fetch error: %v", err)
 	}
-	log.Printf("Received request for Meow Facts with %d iteration", req.Count)
+	defer resp.Body.Close()
+
+	var result pb.CurRes
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read response error: %v", err)
+	}
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal error: %v", err)
+	}
+
+	return &result, nil
+}
+
+func (s *notifServer) StreamMeow(req *pb.MeowReq, stream pb.Notif_StreamMeowServer) error{
 	count := req.Count
+	log.Printf("Received request for Meow Facts with [%d] iteration", count)
 	facts, err := fetchMeow(int(count))
 	if err != nil {
 		return err
@@ -54,7 +72,43 @@ func (s *notifServer) StreamMeow(req *pb.MeowReq, stream pb.Notif_StreamMeowServ
 		log.Printf("Meow Fact %d Sent",i)
 		stream.Send(&pb.MeowRes{Fact: fact})
 		i += 1
-		time.Sleep(1*time.Second)
+		time.Sleep(5*time.Second)
+	}
+	return nil
+}
+
+func (s *notifServer) StreamCurrency(req *pb.CurReq, stream pb.Notif_StreamCurrencyServer) error {
+	from := req.FromCur
+	to := req.ToCur
+	count := req.Count
+
+	log.Printf("Received exchange rate from [%s] to [%s] for: [%d] iteration", from, to, count)
+
+	date := time.Now()
+	dateFake := date.AddDate(0,-6,0)
+
+	for i := 0; i < int(count); i++ {
+		dateString := date.AddDate(0,0,i).Format("2006-01-02")
+		fakeString := dateFake.AddDate(0,0,i).Format("2006-01-02")
+		url := fmt.Sprintf("https://api.frankfurter.app/%s?from=%s&to=%s", fakeString, from, to)
+
+		result, err := fetchCurrency(url)
+		if err != nil {
+			return err
+		}
+		response := &pb.CurRes{
+			Base:	result.Base,
+			Date: 	dateString,
+			Rates:	result.Rates,
+		}
+
+		err = stream.Send(response)
+		if err != nil {
+			return err
+		}
+		log.Printf("Exchange rate from %s to %s on %s is Sent", from, to, dateString)
+
+		time.Sleep(5*time.Second)
 	}
 	return nil
 }
