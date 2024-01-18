@@ -29,15 +29,20 @@ go mod init github.com/faizkads/grpc-calc
 
 2. Compile the `.proto` file for Go and gRPC
 ```bash
-protoc --go_out=. --go-grpc_out=. calc/proto/calc.proto
+protoc --go_out=. --go-grpc_out=. calculator/proto/calc.proto
 ```
 
-3. Run the server
+3. Update dependencies of the Go Module
+```bash 
+go mod tidy
+```
+
+4. Run the server
 ```bash
 go run server/server.go
 ```
 
-4. Run the client with 2 arguments in float32, for example:
+5. Run the client with 2 arguments in float32, for example:
 ```bash
 go run client/client.go 10 2.5
 ```
