@@ -31,23 +31,6 @@ go run server.go
 python client.py
 ```
 
-### Interaction for Currency Exchange (Topic 2)
-In this topic, besides defining a destination currency, now you can input 2 currencies, by separating it with comma:
-
-Single dest:
-```
-Enter base currency code: usd
-Enter destined currency code (seperate with comma for multi-input): gbp
-Enter the number of iteration: 2
-```
-
-Multiple dest:
-```
-Enter base currency code: usd
-Enter destined currency code (seperate with comma for multi-input): gbp, sgd, idr
-Enter the number of iteration: 2
-```
-
 ## Python gRPC Setup *
 Just as a notes for myself to remember 
 1. Set python version for the environment using `pyenv`
@@ -60,6 +43,112 @@ virtualenv venv
 source venv/Scripts/activate
 ```
 3. Install libraries needed
+
+starting up in this project:
 ```bash
 pip install grpcio grpc_tools
+```
+or generally:
+```bash
+pip install -r requirements.txt
+```
+4. Generate the proto files
+
+## Sample Case
+### Topic Selection
+```
+python client.py
+
+Topics:
+1. Daily Meow Fact
+2. Currency Exchange Rate
+Pick a topic for your push notif [1/2]:
+```
+### Topic 1: Meow Facts
+- Client
+```
+python client.py
+
+Topics:
+1. Daily Meow Fact
+2. Currency Exchange Rate
+Pick a topic for your push notif [1/2]: 1
+Enter the number of iteration: 4
+
+[2024-01-18 15:18:09] Meow Fact 1: Of all the species of cats, the domestic cat is the only species able to hold its tail vertically while walking. All species of wild cats hold their talk horizontally or tucked between their legs while walking.
+[2024-01-18 15:18:09] Meow Fact 2: The first cat show was in 1871 at the Crystal Palace in London.
+[2024-01-18 15:18:09] Meow Fact 3: Some common houseplants poisonous to cats include: English Ivy, iris, mistletoe, philodendron, and yew.  
+[2024-01-18 15:18:09] Meow Fact 4: Cats can be taught to walk on a leash, but a lot of time and patience is required to teach them. The younger the cat is, the easier it will be for them to learn.
+```
+
+- Server
+```
+go run server.go
+2024/01/18 15:10:32 Starting notification server on port 50051
+2024/01/18 15:18:09 Received request for Meow Facts with [4] iteration
+2024/01/18 15:18:14 Meow Fact 1 Sent
+2024/01/18 15:18:19 Meow Fact 2 Sent
+2024/01/18 15:18:24 Meow Fact 3 Sent
+2024/01/18 15:18:29 Meow Fact 4 Sent
+```
+
+### Topic 2: Currency Exchange
+#### Single Dest
+- Client
+```
+Topics:
+1. Daily Meow Fact
+2. Currency Exchange Rate
+Pick a topic for your push notif [1/2]: 2
+Available currencies:
+['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JPY', 'KRW', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'RON', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR']
+Enter base currency code: usd
+Enter destined currency code (seperate with comma for multi-input): gbp
+Enter the number of iteration: 3
+[2024-01-18] Base: USD
+- exchange rate for GBP: 0.7626699805259705
+[2024-01-19] Base: USD
+- exchange rate for GBP: 0.7745299935340881
+[2024-01-20] Base: USD
+- exchange rate for GBP: 0.7762799859046936
+```
+- Server
+```
+2024/01/18 15:29:48 Received exchange rate from [usd] to [GBP] for: [3] iteration
+2024/01/18 15:29:48 Exchange rate from usd to GBP on 2024-01-18 is Sent
+2024/01/18 15:29:54 Exchange rate from usd to GBP on 2024-01-19 is Sent
+2024/01/18 15:29:59 Exchange rate from usd to GBP on 2024-01-20 is Sent
+```
+
+#### Multi Dest
+- Client
+```
+Topics:
+1. Daily Meow Fact
+2. Currency Exchange Rate
+Pick a topic for your push notif [1/2]: 2
+Available currencies:
+['AUD', 'BGN', 'BRL', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'IDR', 'ILS', 'INR', 'ISK', 'JPY', 'KRW', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'RON', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR']
+Enter base currency code: usd
+Enter destined currency code (seperate with comma for multi-input): gbp,sgd,eur
+Enter the number of iteration: 3
+[2024-01-18] Base: USD
+- exchange rate for EUR: 0.8884900212287903
+- exchange rate for GBP: 0.7626699805259705
+- exchange rate for SGD: 1.3207999467849731
+[2024-01-19] Base: USD
+- exchange rate for EUR: 0.8911100029945374
+- exchange rate for GBP: 0.7745299935340881
+- exchange rate for SGD: 1.3255000114440918
+[2024-01-20] Base: USD
+- exchange rate for EUR: 0.8931000232696533
+- exchange rate for GBP: 0.7762799859046936
+- exchange rate for SGD: 1.3223999738693237
+```
+- Server
+```
+Received exchange rate from [usd] to [GBP,SGD,EUR] for: [3] iteration
+2024/01/18 15:28:07 Exchange rate from usd to GBP,SGD,EUR on 2024-01-18 is Sent
+2024/01/18 15:28:12 Exchange rate from usd to GBP,SGD,EUR on 2024-01-19 is Sent
+2024/01/18 15:28:17 Exchange rate from usd to GBP,SGD,EUR on 2024-01-20 is Sent
 ```
