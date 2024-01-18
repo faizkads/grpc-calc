@@ -31,6 +31,23 @@ go run server.go
 python client.py
 ```
 
+### Interaction for Currency Exchange (Topic 2)
+In this topic, besides defining a destination currency, now you can input 2 currencies, by separating it with comma:
+
+Single dest:
+```
+Enter base currency code: usd
+Enter destined currency code (seperate with comma for multi-input): gbp
+Enter the number of iteration: 2
+```
+
+Multiple dest:
+```
+Enter base currency code: usd
+Enter destined currency code (seperate with comma for multi-input): gbp, sgd, idr
+Enter the number of iteration: 2
+```
+
 ## Python gRPC Setup *
 Just as a notes for myself to remember 
 1. Set python version for the environment using `pyenv`
