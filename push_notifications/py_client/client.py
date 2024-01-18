@@ -38,13 +38,22 @@ def topic_2(stub):
     codes = ["AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP",
              "HKD", "HUF", "IDR", "ILS", "INR", "ISK", "JPY", "KRW", "MXN", "MYR",
              "NOK", "NZD", "PHP", "PLN", "RON", "SEK", "SGD", "THB", "TRY", "USD", "ZAR"]
+    print("Available currencies: ")
+    print(codes)
 
     from_cur = input("Enter base currency code: ")
-    to_cur = input("Enter destined currency code: ")
-    if not from_cur.upper() in codes or not to_cur.upper() in codes:
-        print("Invalid currency code, available currency codes:")
-        print(codes)
+    if from_cur.upper() not in codes:
+        print("Invalid currency code")
         return
+
+    to_cur = input("Enter destined currency code (if you want more than one, seperate using comma): ")
+    to_cur_list = [code.strip().upper() for code in to_cur.split(",")]
+    invalid_cur = [code for code in to_cur_list if code not in codes]
+    if invalid_cur:
+        print(f"Invalid 'to' currency codes: {', '.join(invalid_cur)}")
+        return
+    to_cur_str = ",".join(to_cur_list)
+    
     try:
         count = int(input("Enter the number of iteration: "))
     except ValueError:
@@ -55,7 +64,7 @@ def topic_2(stub):
         print("Invalid argument. Iteration request should be bigger than 0")
         return
 
-    currency_rate(stub, from_cur,to_cur,count)
+    currency_rate(stub, from_cur,to_cur_str,count)
 
 
 if __name__=="__main__":
