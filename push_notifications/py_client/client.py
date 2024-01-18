@@ -5,15 +5,17 @@ import notif_pb2_grpc
 from datetime import datetime
 
 def get_facts(stub,count):
+    """Sending request to the server, and receive the response, then prints each response"""
     req = notif_pb2.MeowReq(count=count)
     res = stub.StreamMeow(req)
     count = 1
-    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S") # timestamp
     for r in res:
         print(f"[{dt}] Meow Fact {count}: {r.fact}")
         count += 1
 
 def currency_rate(stub, from_cur, to_cur, count):
+    """Sending request to the server, and receive the response, then prints each response"""
     req = notif_pb2.CurReq(
         from_cur = from_cur,
         to_cur = to_cur,
@@ -25,13 +27,14 @@ def currency_rate(stub, from_cur, to_cur, count):
             print(f"[{response.date}] {response.base} exchange rate for {currency}: {rate}")
 
 def topic_1(stub):
+    # validate variable count
     try:
         count = int(input("Enter the number of iteration: "))
     except ValueError:
         print("Invalid argument. Please enter a valid integer")
         return
 
-    get_facts(stub, count)
+    get_facts(stub, count) # function call for request and response
     
 
 def topic_2(stub):
@@ -42,29 +45,30 @@ def topic_2(stub):
     print(codes)
 
     from_cur = input("Enter base currency code: ")
+    # validate the input currency
     if from_cur.upper() not in codes:
         print("Invalid currency code")
         return
 
-    to_cur = input("Enter destined currency code (if you want more than one, seperate using comma): ")
-    to_cur_list = [code.strip().upper() for code in to_cur.split(",")]
-    invalid_cur = [code for code in to_cur_list if code not in codes]
+    to_cur = input("Enter destined currency code (seperate with comma for multi-input): ")
+    to_cur_list = [code.strip().upper() for code in to_cur.split(",")] # turns into a list to be iterable
+    invalid_cur = [code for code in to_cur_list if code not in codes] # check invalid codes
     if invalid_cur:
         print(f"Invalid 'to' currency codes: {', '.join(invalid_cur)}")
         return
-    to_cur_str = ",".join(to_cur_list)
-    
+    to_cur_str = ",".join(to_cur_list) # turns it back into a string with no whitespaces
+
+    # validate variable count 
     try:
         count = int(input("Enter the number of iteration: "))
     except ValueError:
         print("Invalid argument. Please enter a valid integer")
         return
-
     if count < 1:
         print("Invalid argument. Iteration request should be bigger than 0")
         return
 
-    currency_rate(stub, from_cur,to_cur_str,count)
+    currency_rate(stub, from_cur,to_cur_str,count) # function call for request and response
 
 
 if __name__=="__main__":
